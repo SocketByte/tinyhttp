@@ -1,5 +1,5 @@
-#ifndef TINYHTTP_LIBRARY_H
-#define TINYHTTP_LIBRARY_H
+#ifndef TINYHTTP_LIBRARY_HPP
+#define TINYHTTP_LIBRARY_HPP
 
 #include <iostream>
 #include <functional>
