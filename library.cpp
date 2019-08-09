@@ -85,7 +85,7 @@ void TinyHttp::run(int port) {
 #ifdef _WIN32
             if (clientfd != INVALID_SOCKET) {
 #else
-            if (clientfd > 0) {
+            if (clientfd >= 0) {
 #endif
                 clientfds.push_back(clientfd);
                 if (debug)
