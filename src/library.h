@@ -22,6 +22,12 @@
   typedef int SOCKET;
 #endif
 
+#ifdef SOCKET_ERROR
+//
+#else
+#define SOCKET_ERROR -1
+#endif
+
 class Response {
 public:
     std::string body;
@@ -55,7 +61,7 @@ public:
 private:
     std::vector<Route> routes;
 
-    void handle(int clientfd, std::string recv);
+    void handle(int clientfd, std::string_view recv);
 };
 
 #endif
