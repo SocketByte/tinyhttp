@@ -1,5 +1,5 @@
-#ifndef TINYHTTP_LIBRARY_H
-#define TINYHTTP_LIBRARY_H
+#ifndef TINYHTTP_LIBRARY_HPP
+#define TINYHTTP_LIBRARY_HPP
 
 #include <iostream>
 #include <functional>
@@ -20,6 +20,12 @@
   #include <unistd.h>
 
   typedef int SOCKET;
+#endif
+
+#ifdef SOCKET_ERROR
+//
+#else
+#define SOCKET_ERROR -1
 #endif
 
 class Response {
@@ -55,7 +61,7 @@ public:
 private:
     std::vector<Route> routes;
 
-    void handle(int clientfd, std::string recv);
+    void handle(int clientfd, std::string_view recv);
 };
 
 #endif

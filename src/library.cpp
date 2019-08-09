@@ -1,23 +1,26 @@
-#include "library.h"
+#include "library.hpp"
 
-std::vector<std::string> split(const std::string& i_str, const std::string& i_delim) {
+#include <utility>
+#include <thread>
+
+std::vector<std::string> split(std::string_view i_str, std::string_view i_delim) {
     std::vector<std::string> result;
 
     size_t found = i_str.find(i_delim);
     size_t startIndex = 0;
 
     while (found != std::string::npos) {
-        std::string temp(i_str.begin()+startIndex, i_str.begin()+found);
+        std::string temp(i_str.begin() + startIndex, i_str.begin() + found);
         result.push_back(temp);
         startIndex = found + i_delim.size();
         found = i_str.find(i_delim, startIndex);
     }
     if (startIndex != i_str.size())
-        result.push_back(std::string(i_str.begin()+startIndex, i_str.end()));
+        result.emplace_back(i_str.begin() + startIndex, i_str.end());
     return result;
 }
 
-std::string respond(int code, std::string rsn, std::string content_type, std::string body) {
+std::string respond(int code, std::string_view rsn, std::string_view content_type, std::string_view body) {
     std::stringstream res;
     res << "HTTP/1.1 " << code << " " << rsn << "\n";
     res << "Content-Type: " << content_type << "\n";
@@ -117,13 +120,13 @@ void TinyHttp::run(int port) {
 
 void TinyHttp::make_route(const char *path, std::function<void(Context)> function) {
     Route route;
-    route.job = function;
+    route.job = std::move(function);
     route.path = std::string(path);
 
     this->routes.push_back(route);
 }
 
-void TinyHttp::handle(int clientfd, std::string recv) {
+void TinyHttp::handle(int clientfd, std::string_view recv) {
     Context ctx;
     Response resp;
     ctx.response = &resp;
@@ -147,14 +150,14 @@ void TinyHttp::handle(int clientfd, std::string recv) {
         std::vector<std::string> pms = split(query[1], "&");
 
         std::map<std::string, std::string> params;
-        for (auto prm : pms) {
+        for (const auto &prm : pms) {
             std::vector<std::string> s = split(prm, "=");
             params[s[0]] = s[1];
         }
         ctx.params = params;
     }
 
-    for (auto route : this->routes) {
+    for (const auto &route : this->routes) {
         if (route.path != ctx.path) {
             continue;
         }

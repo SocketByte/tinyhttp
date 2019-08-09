@@ -1,5 +1,5 @@
 #include <iostream>
-#include "library.h"
+#include "../src/library.hpp"
 
 // Example
 int main() {
